@@ -1,0 +1,69 @@
+include: package:pedantic/analysis_options.yaml
+
+analyzer:
+  exclude:
+    - lib/*.g.dart
+    - lib/**/*.g.dart
+    - lib/*.freezed.dart
+    - lib/**/*.freezed.dart
+    - lib/generated/*.dart
+    - lib/generated/intl/*.dart
+    - lib/plugins/i18n_generator/lib/*.dart
+    - plugins/**
+    - test/
+    - test/*.mocks.dart
+    - test/**/*.mocks.dart
+  errors:
+    invalid_assignment: warning
+    missing_return: error
+    dead_code: info
+    todo: ignore
+  # Uncomment dart_code_metrics plugin once this issue gets fixed on Flutter
+  # https://github.com/flutter/flutter/issues/95092
+  # plugins:
+  #   - dart_code_metrics
+
+linter:
+  rules:
+    # For Util classes and constants
+    avoid_classes_with_only_static_members: false
+
+    # Make constructors the first thing in every class
+    # sort_constructors_first: true
+
+    # Better readability
+    always_specify_types: true
+    omit_local_variable_types: false
+
+    constant_identifier_names: true
+
+    sort_child_properties_last: true
+    unnecessary_brace_in_string_interps: true
+    await_only_futures: true
+    require_trailing_commas: true
+    # Smaller code blocks are better
+    # lines_longer_than_80_chars: true
+
+dart_code_metrics:
+  anti-patterns:
+    - long-method
+    - long-parameter-list
+  # metrics:
+  # cyclomatic-complexity: 20
+  # maximum-nesting-level: 5
+  # number-of-parameters: 4
+  metrics-exclude:
+    - test/**
+    - plugins/**
+    - lib/generated/**
+    - lib/*.g.dart
+    - lib/**/*.g.dart
+    - lib/*.freezed.dart
+    - lib/**/*.freezed.dart
+    - lib/application/providers/**
+  rules:
+    - no-boolean-literal-compare
+    - no-empty-block
+    - prefer-trailing-comma
+    - prefer-conditional-expressions
+    - no-equal-then-else
