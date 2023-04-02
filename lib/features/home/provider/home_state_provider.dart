@@ -1,22 +1,43 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty/features/home/data/models/character/character_data.dart';
 import 'package:rick_and_morty/features/home/data/models/episode/episode_model.dart';
-import 'package:rick_and_morty/features/home/data/models/home_state.dart';
 import 'package:rick_and_morty/features/home/data/repository/home_repository.dart';
+import 'package:rick_and_morty/features/home/data/repository/local_home_repository.dart';
+import 'package:rick_and_morty/features/home/provider/home_state.dart';
 
 class HomeDataNotifier extends StateNotifier<HomeState> {
-  HomeDataNotifier(this.homeRepository) : super(HomeState()) {
+  HomeDataNotifier(
+    this.homeRepository,
+    this.localHomeRepository,
+    this.connectivity,
+  ) : super(HomeState()) {
     getCharacters();
   }
   HomeRepository homeRepository;
+  LocalHomeRepository localHomeRepository;
+  Connectivity connectivity;
 
   Future<void> getCharacters() async {
     state = state.copyWith(isLoading: true);
-    CharacterData data = await homeRepository.fetchCharacters();
+    CharacterData data;
+    final ConnectivityResult connectivityStatus =
+        await connectivity.checkConnectivity();
+    if (connectivityStatus == ConnectivityResult.none) {
+      List<CharacterModel> models =
+          await localHomeRepository.getAllCharacters();
+      data = CharacterData(characterModels: models);
+    } else {
+      data = await homeRepository.fetchCharacters();
+      await localHomeRepository
+          .updateLocalCharacterDatatable(data.characterModels);
+    }
+
     state = state.copyWith(
       characterData: data,
       isLoading: false,
     );
+    return updateConnectionStatus(connectivityStatus);
   }
 
   Future<void> getEpisodes(List<String> url) async {
@@ -25,6 +46,12 @@ class HomeDataNotifier extends StateNotifier<HomeState> {
     state = state.copyWith(
       episodeModels: data,
       isEpisodeLoading: false,
+    );
+  }
+
+  void updateConnectionStatus(ConnectivityResult connectionStatus) {
+    state = state.copyWith(
+      hasInternet: connectionStatus != ConnectivityResult.none,
     );
   }
 }

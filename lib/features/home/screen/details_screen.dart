@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -15,10 +16,14 @@ class DetailsScreen extends ConsumerWidget {
     required this.characterModel,
   }) : super(key: key);
 
+  final String _sampleDescription =
+      'Learn the basics of lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final List<EpisodeModel> models = ref.watch(homeDataProvider).episodeModels;
     final bool isEpisodeLoading = ref.watch(homeDataProvider).isEpisodeLoading;
+    final bool hasInternet = ref.watch(homeDataProvider).hasInternet;
     return Scaffold(
       backgroundColor: MyTheme.courseCardColor,
       appBar: AppBar(
@@ -33,11 +38,24 @@ class DetailsScreen extends ConsumerWidget {
               Expanded(
                 flex: 35,
                 child: Center(
-                  child: Image.network(
-                    characterModel.image,
+                  child: CachedNetworkImage(
+                    imageUrl: characterModel.image,
                     width: 1000.0,
                     height: 1000.0,
                     fit: BoxFit.cover,
+                    placeholder: (BuildContext context, String url) =>
+                        CircularProgressIndicator(),
+                    errorWidget: (
+                      BuildContext context,
+                      String url,
+                      dynamic error,
+                    ) {
+                      return Icon(
+                        Icons.broken_image,
+                        size: 132.0,
+                        color: Colors.blueGrey,
+                      );
+                    },
                   ),
                 ),
               ),
@@ -74,37 +92,9 @@ class DetailsScreen extends ConsumerWidget {
                         ),
                       ),
                       MyTheme.mediumVerticalPadding,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            '# ${characterModel.id}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Last update:  ${DateTimeUtils.formatStringDate(
-                              characterModel.created,
-                              dateFormat: DateFormat('MMM. dd, yyyy'),
-                            )}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        characterModel.name,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        characterModel.status,
-                        style: TextStyle(fontSize: 16, color: MyTheme.grey),
+                      _TitleView(
+                        characterModel: characterModel,
+                        hasInternet: hasInternet,
                       ),
                       MyTheme.largeVerticalPadding,
                       Text(
@@ -115,53 +105,21 @@ class DetailsScreen extends ConsumerWidget {
                         ),
                       ),
                       MyTheme.smallVerticalPadding,
-                      const Text(
-                        'Learn the basics of lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                      Text(
+                        _sampleDescription,
                         style: TextStyle(fontSize: 16),
                       ),
                       MyTheme.mediumVerticalPadding,
-                      const Text(
-                        'Location',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      MyTheme.smallVerticalPadding,
-                      Text(
-                        'Current Location: ${characterModel.location.name}',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      Text(
-                        'Origin Location: ${characterModel.origin.name}',
-                        style: const TextStyle(fontSize: 16),
+                      _LocationView(
+                        characterModel: characterModel,
                       ),
                       MyTheme.mediumVerticalPadding,
-                      const Text(
-                        'Episodes',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      _EpisodeView(
+                        isEpisodeLoading: isEpisodeLoading,
+                        characterModel: characterModel,
+                        hasInternet: hasInternet,
+                        episodeModel: models,
                       ),
-                      MyTheme.smallVerticalPadding,
-                      isEpisodeLoading
-                          ? const Center(
-                              child: SizedBox(
-                                height: 30,
-                                width: 30,
-                                child: CircularProgressIndicator(),
-                              ),
-                            )
-                          : ListView.builder(
-                              itemCount: models.length,
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemBuilder: (BuildContext context, int index) {
-                                return EpisodeChild(models: models[index]);
-                              },
-                            ),
-                      // : EpisodeChild(models: models),
                       MyTheme.mediumVerticalPadding,
                     ],
                   ),
@@ -171,6 +129,135 @@ class DetailsScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _TitleView extends StatelessWidget {
+  const _TitleView({
+    required this.characterModel,
+    required this.hasInternet,
+  });
+
+  final CharacterModel characterModel;
+  final bool hasInternet;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              '# ${characterModel.id}',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              hasInternet
+                  ? 'Last update:  ${DateTimeUtils.formatStringDate(
+                      characterModel.created!,
+                      dateFormat: DateFormat('MMM. dd, yyyy'),
+                    )}'
+                  : characterModel.created!,
+              style: const TextStyle(
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+        Text(
+          characterModel.name,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          characterModel.status!,
+          style: TextStyle(fontSize: 16, color: MyTheme.grey),
+        ),
+      ],
+    );
+  }
+}
+
+class _LocationView extends StatelessWidget {
+  const _LocationView({required this.characterModel});
+  final CharacterModel characterModel;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Text(
+          'Location',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        MyTheme.smallVerticalPadding,
+        Text(
+          'Current Location: ${characterModel.location != null ? characterModel.location!.name : '-'}',
+          style: const TextStyle(fontSize: 16),
+        ),
+        Text(
+          'Origin Location: ${characterModel.location != null ? characterModel.origin!.name : '-'}',
+          style: const TextStyle(fontSize: 16),
+        ),
+      ],
+    );
+  }
+}
+
+class _EpisodeView extends StatelessWidget {
+  const _EpisodeView({
+    required this.isEpisodeLoading,
+    required this.characterModel,
+    required this.hasInternet,
+    required this.episodeModel,
+  });
+
+  final bool isEpisodeLoading;
+  final CharacterModel characterModel;
+  final bool hasInternet;
+  final List<EpisodeModel> episodeModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Text(
+          'Episodes',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        MyTheme.smallVerticalPadding,
+        isEpisodeLoading
+            ? Center(
+                child: SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: hasInternet ? CircularProgressIndicator() : null,
+                ),
+              )
+            : ListView.builder(
+                itemCount: episodeModel.length,
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (BuildContext context, int index) {
+                  return EpisodeChild(models: episodeModel[index]);
+                },
+              ),
+      ],
     );
   }
 }

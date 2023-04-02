@@ -17,7 +17,7 @@ class HomeRepository {
       return data;
     } on DioError catch (e) {
       final DioExceptions errorMessage = DioExceptions.fromDioError(e);
-      log(errorMessage.toString());
+      log('💀 errorMessage: ${errorMessage.toString()}');
       rethrow;
     }
   }

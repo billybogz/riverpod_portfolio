@@ -11,5 +11,6 @@ class HomeState with _$HomeState {
     @Default(true) bool isLoading,
     @Default(<EpisodeModel>[]) List<EpisodeModel> episodeModels,
     @Default(true) bool isEpisodeLoading,
+    @Default(true) bool hasInternet,
   }) = _HomeState;
 }

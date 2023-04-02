@@ -8,7 +8,9 @@ part of 'character_data.dart';
 
 CharacterData _$CharacterDataFromJson(Map<String, dynamic> json) =>
     CharacterData(
-      info: Info.fromJson(json['info'] as Map<String, dynamic>),
+      info: json['info'] == null
+          ? null
+          : Info.fromJson(json['info'] as Map<String, dynamic>),
       characterModels: (json['results'] as List<dynamic>)
           .map((e) => CharacterModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -38,17 +40,23 @@ CharacterModel _$CharacterModelFromJson(Map<String, dynamic> json) =>
     CharacterModel(
       id: json['id'] as int,
       name: json['name'] as String,
-      status: json['status'] as String,
-      species: json['species'] as String,
-      type: json['type'] as String,
-      gender: json['gender'] as String,
-      origin: Origin.fromJson(json['origin'] as Map<String, dynamic>),
-      location: Location.fromJson(json['location'] as Map<String, dynamic>),
-      image: json['image'] as String,
-      episode:
-          (json['episode'] as List<dynamic>).map((e) => e as String).toList(),
-      url: json['url'] as String,
-      created: json['created'] as String,
+      status: json['status'] as String? ?? '-',
+      species: json['species'] as String? ?? '-',
+      type: json['type'] as String? ?? '-',
+      gender: json['gender'] as String? ?? '-',
+      origin: json['origin'] == null
+          ? null
+          : Origin.fromJson(json['origin'] as Map<String, dynamic>),
+      location: json['location'] == null
+          ? null
+          : Location.fromJson(json['location'] as Map<String, dynamic>),
+      image: json['image'] as String? ?? '-',
+      episode: (json['episode'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
+      url: json['url'] as String? ?? '-',
+      created: json['created'] as String? ?? '-',
     );
 
 Map<String, dynamic> _$CharacterModelToJson(CharacterModel instance) =>
@@ -68,8 +76,8 @@ Map<String, dynamic> _$CharacterModelToJson(CharacterModel instance) =>
     };
 
 Origin _$OriginFromJson(Map<String, dynamic> json) => Origin(
-      name: json['name'] as String,
-      url: json['url'] as String,
+      name: json['name'] as String? ?? '-',
+      url: json['url'] as String? ?? '-',
     );
 
 Map<String, dynamic> _$OriginToJson(Origin instance) => <String, dynamic>{
@@ -78,8 +86,8 @@ Map<String, dynamic> _$OriginToJson(Origin instance) => <String, dynamic>{
     };
 
 Location _$LocationFromJson(Map<String, dynamic> json) => Location(
-      name: json['name'] as String,
-      url: json['url'] as String,
+      name: json['name'] as String? ?? '-',
+      url: json['url'] as String? ?? '-',
     );
 
 Map<String, dynamic> _$LocationToJson(Location instance) => <String, dynamic>{

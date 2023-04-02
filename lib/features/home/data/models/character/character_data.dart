@@ -5,13 +5,13 @@ part 'character_data.g.dart';
 @JsonSerializable()
 class CharacterData {
   @JsonKey(name: 'info')
-  final Info info;
+  final Info? info;
 
   @JsonKey(name: 'results')
   final List<CharacterModel> characterModels;
 
   CharacterData({
-    required this.info,
+    this.info,
     required this.characterModels,
   });
 
@@ -44,16 +44,26 @@ class Info {
 class CharacterModel {
   final int id;
   final String name;
-  final String status;
-  final String species;
-  final String type;
-  final String gender;
-  final Origin origin;
-  final Location location;
+  @JsonKey(name: 'status', defaultValue: '-')
+  final String? status;
+  @JsonKey(name: 'species', defaultValue: '-')
+  final String? species;
+  @JsonKey(name: 'type', defaultValue: '-')
+  final String? type;
+  @JsonKey(name: 'gender', defaultValue: '-')
+  final String? gender;
+  @JsonKey(name: 'origin')
+  final Origin? origin;
+  @JsonKey(name: 'location')
+  final Location? location;
+  @JsonKey(name: 'image', defaultValue: '-')
   final String image;
-  final List<String> episode;
-  final String url;
-  final String created;
+  @JsonKey(name: 'episode', defaultValue: <String>[])
+  final List<String>? episode;
+  @JsonKey(name: 'url', defaultValue: '-')
+  final String? url;
+  @JsonKey(name: 'created', defaultValue: '-')
+  final String? created;
 
   CharacterModel({
     required this.id,
@@ -78,7 +88,9 @@ class CharacterModel {
 
 @JsonSerializable()
 class Origin {
+  @JsonKey(name: 'name', defaultValue: '-')
   final String name;
+  @JsonKey(name: 'url', defaultValue: '-')
   final String url;
 
   Origin({
@@ -93,7 +105,9 @@ class Origin {
 
 @JsonSerializable()
 class Location {
+  @JsonKey(name: 'name', defaultValue: '-')
   final String name;
+  @JsonKey(name: 'url', defaultValue: '-')
   final String url;
 
   Location({
