@@ -2,8 +2,8 @@
 
 import 'package:rick_and_morty/core/network/constant/endpoints.dart';
 import 'package:rick_and_morty/core/network/dio_client.dart';
-import 'package:rick_and_morty/features/home/data/models/character/character_data.dart';
-import 'package:rick_and_morty/features/home/data/models/episode/episode_model.dart';
+import 'package:rick_and_morty/features/home/domain/models/character/character_data.dart';
+import 'package:rick_and_morty/features/home/domain/models/episode/episode_model.dart';
 
 class HomeApi {
   final DioClient _dioClient;
@@ -35,12 +35,20 @@ class HomeApi {
       final dynamic res = await _dioClient.get(
         '${Endpoints.baseUrl}/${Endpoints.episode}/${episodes.join(',')}',
       );
+      print('🍌 ${res.data.runtimeType}');
+      print('🍌 ${res.data}');
       // ignore: always_specify_types
-      final List<dynamic> rawEpisodesList = res.data as List? ?? <dynamic>[];
-      final List<EpisodeModel> episodesList = rawEpisodesList
-          .map((dynamic rawProduct) => EpisodeModel.fromJson(rawProduct))
-          .toList();
-      return episodesList;
+      late List rawEpisodesList;
+      if (res.data is List<dynamic>) {
+        // ignore: always_specify_types
+        rawEpisodesList = res.data as List? ?? [];
+        final List<EpisodeModel> episodesList = rawEpisodesList
+            .map((dynamic rawProduct) => EpisodeModel.fromJson(rawProduct))
+            .toList();
+        return episodesList;
+      }
+      EpisodeModel episodeModel = EpisodeModel.fromJson(res.data);
+      return <EpisodeModel>[episodeModel];
     } catch (e) {
       rethrow;
     }

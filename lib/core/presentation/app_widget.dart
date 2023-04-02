@@ -1,6 +1,6 @@
 import 'package:connection_notifier/connection_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:rick_and_morty/features/home/screen/home_screen.dart';
+import 'package:rick_and_morty/features/home/presentation/screens/home_screen.dart';
 
 class AppWidget extends StatefulWidget {
   const AppWidget({Key? key}) : super(key: key);

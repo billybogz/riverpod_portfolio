@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:rick_and_morty/features/home/data/models/character/character_data.dart';
-import 'package:rick_and_morty/features/home/data/models/episode/episode_model.dart';
+import 'package:rick_and_morty/features/home/domain/models/character/character_data.dart';
+import 'package:rick_and_morty/features/home/domain/models/episode/episode_model.dart';
 
 part 'home_state.freezed.dart';
 

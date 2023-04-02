@@ -1,5 +1,5 @@
 import 'package:rick_and_morty/core/utilities/database_helper.dart';
-import 'package:rick_and_morty/features/home/data/models/character/character_data.dart';
+import 'package:rick_and_morty/features/home/domain/models/character/character_data.dart';
 import 'package:sqflite/sqflite.dart';
 
 class LocalHomeRepository {

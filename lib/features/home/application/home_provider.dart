@@ -1,11 +1,11 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty/core/shared_provider/shared_providers.dart';
-import 'package:rick_and_morty/features/home/data/api/home_api.dart';
-import 'package:rick_and_morty/features/home/provider/home_state.dart';
-import 'package:rick_and_morty/features/home/data/repository/home_repository.dart';
-import 'package:rick_and_morty/features/home/data/repository/local_home_repository.dart';
-import 'package:rick_and_morty/features/home/provider/home_state_provider.dart';
+import 'package:rick_and_morty/features/home/infrastructure/datasources/remote/home_api.dart';
+import 'package:rick_and_morty/features/home/application/home_state.dart';
+import 'package:rick_and_morty/features/home/infrastructure/repositories/home_repository.dart';
+import 'package:rick_and_morty/features/home/infrastructure/repositories/local_home_repository.dart';
+import 'package:rick_and_morty/features/home/application/home_state_provider.dart';
 
 final Provider<HomeApi> homeApiProvider =
     Provider<HomeApi>((ProviderRef<HomeApi> ref) {

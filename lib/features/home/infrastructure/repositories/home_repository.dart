@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:rick_and_morty/core/network/dio_exceptions.dart';
-import 'package:rick_and_morty/features/home/data/api/home_api.dart';
-import 'package:rick_and_morty/features/home/data/models/character/character_data.dart';
-import 'package:rick_and_morty/features/home/data/models/episode/episode_model.dart';
+import 'package:rick_and_morty/features/home/infrastructure/datasources/remote/home_api.dart';
+import 'package:rick_and_morty/features/home/domain/models/character/character_data.dart';
+import 'package:rick_and_morty/features/home/domain/models/episode/episode_model.dart';
 
 class HomeRepository {
   final HomeApi _homeApi;

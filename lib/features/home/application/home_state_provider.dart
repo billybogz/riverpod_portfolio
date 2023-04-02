@@ -1,10 +1,10 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rick_and_morty/features/home/data/models/character/character_data.dart';
-import 'package:rick_and_morty/features/home/data/models/episode/episode_model.dart';
-import 'package:rick_and_morty/features/home/data/repository/home_repository.dart';
-import 'package:rick_and_morty/features/home/data/repository/local_home_repository.dart';
-import 'package:rick_and_morty/features/home/provider/home_state.dart';
+import 'package:rick_and_morty/features/home/domain/models/character/character_data.dart';
+import 'package:rick_and_morty/features/home/domain/models/episode/episode_model.dart';
+import 'package:rick_and_morty/features/home/infrastructure/repositories/home_repository.dart';
+import 'package:rick_and_morty/features/home/infrastructure/repositories/local_home_repository.dart';
+import 'package:rick_and_morty/features/home/application/home_state.dart';
 
 class HomeDataNotifier extends StateNotifier<HomeState> {
   HomeDataNotifier(

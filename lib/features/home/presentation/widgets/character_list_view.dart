@@ -1,73 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rick_and_morty/features/home/data/models/character/character_data.dart';
-import 'package:rick_and_morty/features/home/provider/home_provider.dart';
-import 'package:rick_and_morty/features/home/screen/details_screen.dart';
+import 'package:rick_and_morty/features/home/domain/models/character/character_data.dart';
+import 'package:rick_and_morty/features/home/presentation/screens/details_screen.dart';
+import 'package:rick_and_morty/features/home/application/home_provider.dart';
 import 'package:sizer/sizer.dart';
 
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({this.hasInternet = true});
-
-  final bool hasInternet;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final bool isLoading = ref.watch(homeDataProvider).isLoading;
-    return SafeArea(
-      child: Scaffold(
-        body: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : const _RickAndMortyItems(),
-      ),
-    );
-  }
-}
-
-class _RickAndMortyItems extends ConsumerWidget {
-  const _RickAndMortyItems({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final List<CharacterModel> models =
-        ref.watch(homeDataProvider).characterData!.characterModels;
-    final bool hasInternet = ref.watch(homeDataProvider).hasInternet;
-    return models.isEmpty
-        ? const _EmptyDisplayView()
-        : _CharacterListView(
-            hasInternet: hasInternet,
-            models: models,
-            ref: ref,
-          );
-  }
-}
-
-class _EmptyDisplayView extends StatelessWidget {
-  const _EmptyDisplayView();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.only(
-          top: 150,
-          left: 8,
-          right: 8,
-        ),
-        child: Text(
-          'There are no any characters.',
-          style: TextStyle(fontSize: 25),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-}
-
-class _CharacterListView extends StatelessWidget {
-  const _CharacterListView({
+class CharacterListView extends StatelessWidget {
+  const CharacterListView({
     required this.models,
     required this.hasInternet,
     required this.ref,
