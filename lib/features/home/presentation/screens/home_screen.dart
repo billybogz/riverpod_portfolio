@@ -30,11 +30,9 @@ class _RickAndMortyItems extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final HomeState state = ref.watch(homeDataProvider);
     final CharacterData characterData = state.characterDatas.first;
-    final bool hasInternet = state.hasInternet;
     return characterData.characterModels.isEmpty
         ? const _EmptyDisplayView()
         : CharacterListView(
-            hasInternet: hasInternet,
             characterData: characterData,
             ref: ref,
           );

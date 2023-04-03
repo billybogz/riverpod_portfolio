@@ -75,6 +75,12 @@ class HomeDataNotifier extends StateNotifier<HomeState> {
   }
 
   Future<void> getEpisodes(List<String> url) async {
+    bool connectivityStatus =
+        await _flutterNetworkConnectivity.isInternetConnectionAvailable();
+    updateConnectionStatus(connectivityStatus);
+    if (!connectivityStatus) {
+      return;
+    }
     state = state.copyWith(isEpisodeLoading: true);
     List<EpisodeModel> data = await homeRepository.fetchEpisodes(url);
     state = state.copyWith(

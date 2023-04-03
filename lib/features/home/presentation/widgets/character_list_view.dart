@@ -10,12 +10,10 @@ import 'package:sizer/sizer.dart';
 
 class CharacterListView extends StatefulWidget {
   const CharacterListView({
-    required this.hasInternet,
     required this.ref,
     required this.characterData,
   });
 
-  final bool hasInternet;
   final WidgetRef ref;
   final CharacterData characterData;
 
@@ -67,11 +65,9 @@ class _CharacterListViewState extends State<CharacterListView> {
           }
           return InkWell(
             onTap: () {
-              if (widget.hasInternet) {
-                widget.ref
-                    .read(homeDataProvider.notifier)
-                    .getEpisodes(models[index].episode!);
-              }
+              widget.ref
+                  .read(homeDataProvider.notifier)
+                  .getEpisodes(models[index].episode!);
               Navigator.push(
                 context,
                 MaterialPageRoute<dynamic>(
