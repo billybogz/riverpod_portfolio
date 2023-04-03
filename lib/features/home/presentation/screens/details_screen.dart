@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:rick_and_morty/core/utilities/date_time_utils.dart';
 import 'package:rick_and_morty/core/utilities/themes.dart';
+import 'package:rick_and_morty/features/home/application/home_state.dart';
 import 'package:rick_and_morty/features/home/domain/models/character/character_data.dart';
 import 'package:rick_and_morty/features/home/domain/models/episode/episode_model.dart';
 import 'package:rick_and_morty/features/home/presentation/widgets/episode_view.dart';
@@ -22,9 +23,10 @@ class DetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<EpisodeModel> models = ref.watch(homeDataProvider).episodeModels;
-    final bool isEpisodeLoading = ref.watch(homeDataProvider).isEpisodeLoading;
-    final bool hasInternet = ref.watch(homeDataProvider).hasInternet;
+    final HomeState state = ref.watch(homeDataProvider);
+    final List<EpisodeModel> models = state.episodeModels;
+    final bool isEpisodeLoading = state.isEpisodeLoading;
+    final bool hasInternet = state.hasInternet;
     return Scaffold(
       backgroundColor: MyTheme.courseCardColor,
       appBar: AppBar(

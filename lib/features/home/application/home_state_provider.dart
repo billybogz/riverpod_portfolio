@@ -32,10 +32,38 @@ class HomeDataNotifier extends StateNotifier<HomeState> {
       await localHomeRepository
           .updateLocalCharacterDatatable(data.characterModels);
     }
+    state = state.copyWith(
+      characterDatas: <CharacterData>[data],
+      isLoading: false,
+    );
+    return updateConnectionStatus(connectivityStatus);
+  }
+
+  Future<void> getMoreCharacters() async {
+    if (state.characterDatas.last.info!.next == null) {
+      return;
+    }
+    state = state.copyWith(isLoadMoreLoading: true);
+    List<CharacterData> datas = state.characterDatas;
+    CharacterData data;
+    final ConnectivityResult connectivityStatus =
+        await connectivity.checkConnectivity();
+    if (connectivityStatus == ConnectivityResult.none) {
+      List<CharacterModel> models =
+          await localHomeRepository.getAllCharacters();
+      data = CharacterData(characterModels: models);
+    } else {
+      data = await homeRepository.fetchCharacters(
+        nextUrl: state.characterDatas.last.info!.next,
+      );
+      // datas.add(data);
+      await localHomeRepository
+          .updateLocalCharacterDatatable(data.characterModels);
+    }
 
     state = state.copyWith(
-      characterData: data,
-      isLoading: false,
+      characterDatas: <CharacterData>[...datas, data],
+      isLoadMoreLoading: false,
     );
     return updateConnectionStatus(connectivityStatus);
   }

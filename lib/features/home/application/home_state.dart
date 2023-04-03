@@ -7,10 +7,11 @@ part 'home_state.freezed.dart';
 @freezed
 class HomeState with _$HomeState {
   factory HomeState({
-    CharacterData? characterData,
+    @Default(<CharacterData>[]) List<CharacterData> characterDatas,
     @Default(true) bool isLoading,
     @Default(<EpisodeModel>[]) List<EpisodeModel> episodeModels,
     @Default(true) bool isEpisodeLoading,
     @Default(true) bool hasInternet,
+    @Default(true) bool isLoadMoreLoading,
   }) = _HomeState;
 }

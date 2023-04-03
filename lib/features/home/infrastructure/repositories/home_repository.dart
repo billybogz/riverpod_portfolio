@@ -11,9 +11,12 @@ class HomeRepository {
 
   HomeRepository(this._homeApi);
 
-  Future<CharacterData> fetchCharacters() async {
+  Future<CharacterData> fetchCharacters({
+    String? nextUrl,
+  }) async {
     try {
-      final CharacterData data = await _homeApi.fetchCharactersApiRequest();
+      final CharacterData data =
+          await _homeApi.fetchCharactersApiRequest(nextUrl: nextUrl);
       return data;
     } on DioError catch (e) {
       final DioExceptions errorMessage = DioExceptions.fromDioError(e);

@@ -10,10 +10,12 @@ class HomeApi {
 
   HomeApi(this._dioClient);
 
-  Future<CharacterData> fetchCharactersApiRequest() async {
+  Future<CharacterData> fetchCharactersApiRequest({
+    String? nextUrl,
+  }) async {
     try {
-      final dynamic res =
-          await _dioClient.get('${Endpoints.baseUrl}/${Endpoints.character}');
+      final dynamic res = await _dioClient
+          .get(nextUrl ?? '${Endpoints.baseUrl}/${Endpoints.character}');
       CharacterData data = CharacterData.fromJson(res.data);
       return data;
     } catch (e) {
@@ -35,8 +37,6 @@ class HomeApi {
       final dynamic res = await _dioClient.get(
         '${Endpoints.baseUrl}/${Endpoints.episode}/${episodes.join(',')}',
       );
-      print('🍌 ${res.data.runtimeType}');
-      print('🍌 ${res.data}');
       // ignore: always_specify_types
       late List rawEpisodesList;
       if (res.data is List<dynamic>) {
