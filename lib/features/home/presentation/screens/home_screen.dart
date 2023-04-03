@@ -6,9 +6,7 @@ import 'package:rick_and_morty/features/home/presentation/widgets/character_list
 import 'package:rick_and_morty/features/home/application/home_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({this.hasInternet = true});
-
-  final bool hasInternet;
+  const HomeScreen();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

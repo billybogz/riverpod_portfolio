@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty/core/shared_provider/shared_providers.dart';
 import 'package:rick_and_morty/features/home/infrastructure/datasources/remote/home_api.dart';
@@ -22,17 +21,11 @@ final Provider<LocalHomeRepository> localHomeRepositoryProvider =
   return LocalHomeRepository();
 });
 
-final Provider<Connectivity> connectivityProvider =
-    Provider<Connectivity>((ProviderRef<Connectivity> ref) {
-  return Connectivity();
-});
-
 final StateNotifierProvider<HomeDataNotifier, HomeState> homeDataProvider =
     StateNotifierProvider<HomeDataNotifier, HomeState>(
         (StateNotifierProviderRef<HomeDataNotifier, HomeState> ref) {
   return HomeDataNotifier(
     ref.read(homeRepositoryProvider),
     ref.read(localHomeRepositoryProvider),
-    ref.read(connectivityProvider),
   );
 });

@@ -1,4 +1,5 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
+// import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_network_connectivity/flutter_network_connectivity.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty/features/home/domain/models/character/character_data.dart';
 import 'package:rick_and_morty/features/home/domain/models/episode/episode_model.dart';
@@ -10,27 +11,30 @@ class HomeDataNotifier extends StateNotifier<HomeState> {
   HomeDataNotifier(
     this.homeRepository,
     this.localHomeRepository,
-    this.connectivity,
   ) : super(HomeState()) {
     getCharacters();
   }
   HomeRepository homeRepository;
   LocalHomeRepository localHomeRepository;
-  Connectivity connectivity;
+
+  final FlutterNetworkConnectivity _flutterNetworkConnectivity =
+      FlutterNetworkConnectivity();
 
   Future<void> getCharacters() async {
     state = state.copyWith(isLoading: true);
     CharacterData data;
-    final ConnectivityResult connectivityStatus =
-        await connectivity.checkConnectivity();
-    if (connectivityStatus == ConnectivityResult.none) {
+    bool connectivityStatus =
+        await _flutterNetworkConnectivity.isInternetConnectionAvailable();
+    if (!connectivityStatus) {
       List<CharacterModel> models =
           await localHomeRepository.getAllCharacters();
       data = CharacterData(characterModels: models);
     } else {
       data = await homeRepository.fetchCharacters();
-      await localHomeRepository
-          .updateLocalCharacterDatatable(data.characterModels);
+      await localHomeRepository.updateLocalCharacterDatatable(
+        data.characterModels,
+        isInitialList: true,
+      );
     }
     state = state.copyWith(
       characterDatas: <CharacterData>[data],
@@ -40,32 +44,34 @@ class HomeDataNotifier extends StateNotifier<HomeState> {
   }
 
   Future<void> getMoreCharacters() async {
-    if (state.characterDatas.last.info!.next == null) {
+    bool connectivityStatus =
+        await _flutterNetworkConnectivity.isInternetConnectionAvailable();
+    updateConnectionStatus(connectivityStatus);
+    if (!connectivityStatus) {
       return;
+    }
+    if (state.characterDatas.last.info!.next == null) {
+      state = state.copyWith(isLoadMoreLoading: false);
     }
     state = state.copyWith(isLoadMoreLoading: true);
     List<CharacterData> datas = state.characterDatas;
     CharacterData data;
-    final ConnectivityResult connectivityStatus =
-        await connectivity.checkConnectivity();
-    if (connectivityStatus == ConnectivityResult.none) {
-      List<CharacterModel> models =
-          await localHomeRepository.getAllCharacters();
-      data = CharacterData(characterModels: models);
-    } else {
-      data = await homeRepository.fetchCharacters(
-        nextUrl: state.characterDatas.last.info!.next,
-      );
-      // datas.add(data);
-      await localHomeRepository
-          .updateLocalCharacterDatatable(data.characterModels);
-    }
-
+    data = await homeRepository.fetchCharacters(
+      nextUrl: state.characterDatas.last.info!.next,
+    );
+    List<CharacterData> newDatas = <CharacterData>[...datas, data];
+    final List<CharacterModel> models = newDatas
+        .map((CharacterData data) => data.characterModels)
+        .toList()
+        .expand((List<CharacterModel> element) => element)
+        .toList();
+    await localHomeRepository.updateLocalCharacterDatatable(models);
     state = state.copyWith(
-      characterDatas: <CharacterData>[...datas, data],
+      characterDatas: newDatas,
       isLoadMoreLoading: false,
     );
-    return updateConnectionStatus(connectivityStatus);
+    // }
+    return;
   }
 
   Future<void> getEpisodes(List<String> url) async {
@@ -77,9 +83,9 @@ class HomeDataNotifier extends StateNotifier<HomeState> {
     );
   }
 
-  void updateConnectionStatus(ConnectivityResult connectionStatus) {
+  void updateConnectionStatus(bool hasInternet) {
     state = state.copyWith(
-      hasInternet: connectionStatus != ConnectivityResult.none,
+      hasInternet: hasInternet,
     );
   }
 }

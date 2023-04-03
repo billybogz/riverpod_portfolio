@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty/features/home/application/home_provider.dart';
 import 'package:rick_and_morty/features/home/application/home_state.dart';
-import 'package:rick_and_morty/features/home/application/home_state_provider.dart';
 import 'package:rick_and_morty/features/home/domain/models/character/character_data.dart';
 import 'package:rick_and_morty/features/home/presentation/screens/details_screen.dart';
 import 'package:sizer/sizer.dart';
@@ -34,6 +33,9 @@ class _CharacterListViewState extends State<CharacterListView> {
   }
 
   void _scrollListener() {
+    if (!widget.hasInternet) {
+      return;
+    }
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       // Load more data and update the list
@@ -122,6 +124,17 @@ class _ImageView extends StatelessWidget {
         child: CachedNetworkImage(
           imageUrl: model.image,
           fit: BoxFit.fill,
+          errorWidget: (
+            BuildContext context,
+            String url,
+            dynamic error,
+          ) {
+            return Icon(
+              Icons.broken_image,
+              size: 132.0,
+              color: Colors.blueGrey,
+            );
+          },
         ),
       ),
     );

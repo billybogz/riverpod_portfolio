@@ -1,3 +1,4 @@
+import 'package:rick_and_morty/core/utilities/consts.dart';
 import 'package:rick_and_morty/core/utilities/database_helper.dart';
 import 'package:rick_and_morty/features/home/domain/models/character/character_data.dart';
 import 'package:sqflite/sqflite.dart';
@@ -21,9 +22,14 @@ class LocalHomeRepository {
   }
 
   Future<void> updateLocalCharacterDatatable(
-    List<CharacterModel> characterList,
-  ) async {
+    List<CharacterModel> characterList, {
+    bool isInitialList = false,
+  }) async {
     final Database database = await databaseFuture;
+    if (!isInitialList) {
+      await database.execute('DROP TABLE IF EXISTS Character');
+      await database.execute(CREATE_CHARACTER_DATA);
+    }
     Batch batch = database.batch();
     characterList.forEach((CharacterModel character) async {
       batch.insert(
