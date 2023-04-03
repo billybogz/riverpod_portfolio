@@ -2,14 +2,9 @@ import 'package:connection_notifier/connection_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:rick_and_morty/features/home/presentation/screens/home_screen.dart';
 
-class AppWidget extends StatefulWidget {
+class AppWidget extends StatelessWidget {
   const AppWidget({Key? key}) : super(key: key);
 
-  @override
-  State<AppWidget> createState() => _AppWidgetState();
-}
-
-class _AppWidgetState extends State<AppWidget> {
   @override
   Widget build(BuildContext context) {
     return ConnectionNotifier(

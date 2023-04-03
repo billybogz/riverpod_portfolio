@@ -26,9 +26,9 @@ class HomeDataNotifier extends StateNotifier<HomeState> {
     bool connectivityStatus =
         await _flutterNetworkConnectivity.isInternetConnectionAvailable();
     if (!connectivityStatus) {
-      List<CharacterModel> models =
+      List<CharacterModel> localModels =
           await localHomeRepository.getAllCharacters();
-      data = CharacterData(characterModels: models);
+      data = CharacterData(characterModels: localModels);
     } else {
       data = await homeRepository.fetchCharacters();
       await localHomeRepository.updateLocalCharacterDatatable(

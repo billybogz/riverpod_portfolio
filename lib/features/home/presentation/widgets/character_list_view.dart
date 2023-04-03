@@ -33,9 +33,6 @@ class _CharacterListViewState extends State<CharacterListView> {
   }
 
   void _scrollListener() {
-    if (!widget.hasInternet) {
-      return;
-    }
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       // Load more data and update the list
