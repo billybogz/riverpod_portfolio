@@ -55,4 +55,3 @@ release.keystore
 *.lock
 *.mocks.dart
 *.gr.dart
-.DS_Store
